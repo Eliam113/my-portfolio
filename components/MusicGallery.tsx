@@ -8,41 +8,43 @@ import SongCard from "./SongCard";
 
 import { BeamsBackground } from "@/components/ui/beams-background";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 
 //import Eliam1 from "@/public/Eliam1beat20252.wav";
 
 const songs = [{
   title: `Holy Beat`,
   artist: "Eliam",
-  src: "/Eliam1beat20252.wav",
+  src: `${basePath}/Eliam1beat20252.wav`,
 }, {
   title: `Summer Orchestra`,
   artist: "Eliam",
-  src: "/OrchestreETE2_version02.wav",
+  src: `${basePath}/OrchestreETE2_version02.wav`,
 }, {
   title: `Sleeping Star`,
   artist: "Eliam",
-  src: "/SleepingStar-Eliam.wav",
+  src: `${basePath}/SleepingStar-Eliam.wav`,
 }
 , {
   title: `Cinematic Drive`,
   artist: "Eliam",
-  src: "/Cinematic1-Eliam1.wav",
+  src: `${basePath}/Cinematic1-Eliam1.wav`,
 }
 , {
   title: `The Goblin Dance`,
   artist: "Eliam",
-  src: "/Goblin2-2.wav",
+  src: `${basePath}/Goblin2-2.wav`,
 },
 {
   title: `The PhilX Beat`,
   artist: "Eliam",
-  src: "/ThePhilX-4.wav",
+  src: `${basePath}/ThePhilX-4.wav`,
 },
 {
   title: `The 1st Samurai`,
   artist: "Eliam",
-  src: "/U_Samurai_test1.mp3",
+  src: `${basePath}/U_Samurai_test1.mp3`,
 }
 ];
 
