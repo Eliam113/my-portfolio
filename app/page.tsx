@@ -1,103 +1,67 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import Image, { StaticImageData } from 'next/image'
+
+import TextSection from "@/components/TextSection";
+import ImageSection from "@/components/ImageSection";
+import MusicComponent from "@/components/MusicComponent";
+import ConnectSection from "@/components/ConnectSection";
+import MusicGallery from "@/components/MusicGallery";
+import HorizontalTrack from "@/components/HorizontalTrack";
+import { BeamsBackground } from "@/components/ui/beams-background";
+
+import ds from './ds.jpg';
+import meImg from '../public/meImg.jpg';
+import eliamStation from '../public/EliamStation.png';
+import myLogo from '../public/Untitled design.png';
+
+const descArray = [
+  "I’m a software engineer and music producer passionate. I have programming experiences since 2017 where I started web development with HTML, CSS, and JavaScript in a coding workshop in Highschool for 5 years. I've also taken a 2 years Python class back then.",
+  "Since then I have learned React, Node.js, Three.js, and more. Later on I learned Java, Tailwind.css and React Native. I programmed video games in the browser, as well as Unity and multiplayer games using websockets.",
+  "In addition to coding, I produce music using Ableton Live combined with Native Instruments. I am very inspired by movie/video game -soundatracks. Check my music below!",]
+
+export default function HomePage() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="relative overflow-x-hidden snap-y snap-mandatory h-screen overflow-scroll no-scrollbar bg-black" ref={containerRef}>
+      <motion.div className="fixed flex w-[100px] max-h-[80%] items-center justified-center opacity-60 ml-[35%] mt-35" whileHover={{ scale: 1.5, opacity: 1 }}>
+      <Image src={myLogo} alt="Eliam logo"/>
+      </motion.div>
+      
+      <section className="snap-start h-screen w-full relative pointer-events-none">
+        <motion.div
+          className="fixed top-0 left-0 w-full h-screen z-10 transition-opacity duration-700"
+        >
+          <TextSection
+            title="Hi, I’m Eliam"
+            descriptions = {descArray}
+          />
+          <ImageSection src={eliamStation} alt="Eliam portrait" />
+        </motion.div>
+      </section>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Music Section */}
+      <section className="snap-center h-screen relative z-20">
+        <div className="absolute inset-0 z-15">
+          <BeamsBackground/>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        <MusicGallery />
+      </section>
+
+
+      {/* Let's Connect */}
+      <section className="snap-start min-h-screen relative z-20">
+      <ConnectSection/>
+      </section>
+    </main>
+  )
 }
+

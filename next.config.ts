@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+import { image } from "framer-motion/client"
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
+  output: 'export',
+ 
+  images: {
+    unoptimized: true,
+  },
+ 
+  // Optional: Change the output directory `out` -> `dist`
+  // distDir: 'dist',
+}
+ 
+module.exports = nextConfig
