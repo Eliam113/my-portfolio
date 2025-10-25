@@ -1,12 +1,8 @@
-import { b, image } from "framer-motion/client"
-
-/**
- * @type {import('next').NextConfig}
- */
+import type { NextConfig } from "next";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   basePath: isProduction ? "/my-portfolio" : "",
   output: "export",
   images: { unoptimized: true },
