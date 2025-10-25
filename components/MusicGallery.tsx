@@ -8,7 +8,7 @@ import SongCard from "./SongCard";
 
 import { BeamsBackground } from "@/components/ui/beams-background";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""; //change to "" if not deployed or "/my-portfolio" if deployed
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/my-portfolio"; //change to "" if not deployed or "/my-portfolio" if deployed
 
 console.log("Base path is:", basePath);
 const songs = [{
