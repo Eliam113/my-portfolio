@@ -12,10 +12,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  env: {
-    NEXT_PUBLIC_BASE_PATH: isProduction ? '/my-portfolio' : '',
+ publicRuntimeConfig: {
+    basePath: isProduction ? '/my-portfolio' : '',
   },
- 
   // Optional: Change the output directory `out` -> `dist`
   // distDir: 'dist',
 }
