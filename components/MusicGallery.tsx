@@ -8,9 +8,7 @@ import SongCard from "./SongCard";
 
 import { BeamsBackground } from "@/components/ui/beams-background";
 
-import getConfig from "next/config";
-const { publicRuntimeConfig } = getConfig();
-const basePath = publicRuntimeConfig?.basePath || "";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH;
 
 //import Eliam1 from "@/public/Eliam1beat20252.wav";
 
