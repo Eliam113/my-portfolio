@@ -14,7 +14,7 @@ console.log("Base path is:", basePath);
 const songs = [{
   title: `Holy Beat`,
   artist: "Eliam",
-  src: `${basePath}/Eliam1beat20252.wav`,
+  src: `/Eliam1beat20252.wav`,
 }, {
   title: `Summer Orchestra`,
   artist: "Eliam",
