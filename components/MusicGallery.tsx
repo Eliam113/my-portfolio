@@ -8,14 +8,14 @@ import SongCard from "./SongCard";
 
 import { BeamsBackground } from "@/components/ui/beams-background";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/my-portfolio";
 
 //import Eliam1 from "@/public/Eliam1beat20252.wav";
 console.log("Base path is:", basePath);
 const songs = [{
   title: `Holy Beat`,
   artist: "Eliam",
-  src: `${basePath}/Eliam1beat20252.wav`,
+  src: `my-portfolio/Eliam1beat20252.wav`,
 }, {
   title: `Summer Orchestra`,
   artist: "Eliam",
