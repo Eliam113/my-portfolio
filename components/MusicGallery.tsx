@@ -11,7 +11,7 @@ import { BeamsBackground } from "@/components/ui/beams-background";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 //import Eliam1 from "@/public/Eliam1beat20252.wav";
-
+console.log("Base path is:", process.env.NEXT_PUBLIC_BASE_PATH);
 const songs = [{
   title: `Holy Beat`,
   artist: "Eliam",
