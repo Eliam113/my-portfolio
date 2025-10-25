@@ -35,10 +35,16 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Own note
+## OWN NOTES
 
 npm run dev : runs the project
 npm run build : updates or creates the out/ for Github
 npx serve ./out : checks everything
 git push ... commit ... push : to upadte my project on git
 don't forget to cd my-portfolio because C:\Users\Razer\CODE\my-portfolio\my-portfolio
+
+!! CHANGE LINE 11 if I need to work outside of Github pages to :
+
+- const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/my-portfolio";
+  OR
+- const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
