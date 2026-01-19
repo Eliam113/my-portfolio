@@ -43,7 +43,7 @@ npx serve ./out : checks everything
 git push ... commit ... push : to upadte my project on git
 don't forget to cd my-portfolio because C:\Users\Razer\CODE\my-portfolio\my-portfolio
 
-!! CHANGE LINE 11 if I need to work outside of Github pages to :
+!! CHANGE LINE 11 if I need to work outside of Github pages to (MusicGallery):
 
 - const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/my-portfolio";
   OR

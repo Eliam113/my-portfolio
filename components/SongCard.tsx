@@ -113,7 +113,7 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
 
       <motion.div
         ref={progressRef}
-        className="w-[85%] h-2 bg-gray-700 rounded-full cursor-pointer ml-4 items-center"
+        className="md:w-[85%] w-[78%] h-2 bg-gray-700 rounded-full cursor-pointer ml-4 items-center"
         onClick={scrub}
         whileHover={{ scaleY: 1.5 }}
       >

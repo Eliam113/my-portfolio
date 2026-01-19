@@ -130,3 +130,20 @@
   }
 }
 
+/* Scroll-snap helper: keep snap off by default, enable after body.snap-enabled */
+.snap-root {
+  /* start with no snap; pages/sections can still use align classes */
+  scroll-snap-type: none;
+  scroll-behavior: smooth;
+}
+
+body.snap-enabled .snap-root {
+  /* enable vertical mandatory snapping when class is present */
+  scroll-snap-type: y mandatory;
+}
+
+/* Utility for sections (optional) — your existing tailwind classes like 'snap-start' will continue to work */
+.snap-section {
+  scroll-snap-align: start;
+}
+

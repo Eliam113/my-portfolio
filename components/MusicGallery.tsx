@@ -79,7 +79,7 @@ export default function MusicGallery() {
               className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text mb-12 overflow-visible pb-2"
               initial={{ y: 20, scale:0.85}}
               whileInView={{ y: 0, scale:1 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               whileHover={{ scale: 1.05 }}
             >
             <h1>My Music🎧</h1>
@@ -88,7 +88,6 @@ export default function MusicGallery() {
         <motion.div className="h-[500px] w-[900px] max-w-[90%] rounded-2xl bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-1 items-center justify-center flex "
         initial={{ y: 50, scale:0.85}}
         whileInView={{ y: 0, scale:1 }}
-        whileHover={{ scale: 1.02 }}
         transition={{ type: "spring", stiffness: 300, duration: 0.7 }}
         >
 
