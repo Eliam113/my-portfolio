@@ -15,9 +15,9 @@ export default function TextSection({ title, descriptions }: TextSectionProps) {
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
     >
-      <h1 className="text-5xl font-bold mb-10">{title}</h1>
+      <h1 className="md:text-5xl text-3xl font-bold mb-10">{title}</h1>
       {descriptions.map((desc, index) => (
-        <p key={index} className="text-lg text-white-600 max-w-100 mb-5">{desc}</p>
+        <p key={index} className="md:text-lg text-base text-white-600 max-w-100 mb-5">{desc}</p>
       ))}
 
     </motion.div>

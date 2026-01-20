@@ -77,10 +77,10 @@ export default function HomePage() {
 
   return (
     <main className="relative overflow-x-hidden snap-y snap-mandatory h-screen overflow-scroll no-scrollbar bg-black" ref={containerRef}>
-      <motion.button onClick={scrollToNextSection} className="fixed flex w-[120px] max-h-[80%] items-center justify-center opacity-80 ml-[4%] mt-[4%] z-25 bg-transparent border-0" whileHover={{ scale: 1.05, opacity: 1 }} aria-label="Go to next section">
+      <motion.button onClick={scrollToNextSection} className="fixed flex md:w-[120px] w-[80px] max-h-[80%] items-center justify-center opacity-80 ml-[4%] mt-[4%] z-25 bg-transparent border-0" whileHover={{ scale: 1.05, opacity: 1 }} aria-label="Go to next section">
         <Image src={myLogo} alt="Eliam logo"/>
       </motion.button>
-      <div className="fixed flex items-center justify-center opacity-80 ml-[10%] mt-[86vh] z-15 bg-transparent border-0" >
+      <div className="fixed flex items-center justify-center opacity-80 ml-[4%] mt-[84vh] mb-10 z-15 bg-transparent border-0" >
       <SocialProfileButtons />
       </div>
       

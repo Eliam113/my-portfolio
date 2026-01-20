@@ -76,7 +76,7 @@ export default function MusicGallery() {
       className="w-full h-screen flex z-20 relative transition-colors items-center justify-center flex-col"
     >
             <motion.div
-              className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text mb-12 overflow-visible pb-2"
+              className="md:text-5xl text-3xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text md:mb-12 mb-3 overflow-visible pb-2"
               initial={{ y: 20, scale:0.85}}
               whileInView={{ y: 0, scale:1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -86,9 +86,6 @@ export default function MusicGallery() {
             </motion.div>
 
         <motion.div className="h-[500px] w-[900px] max-w-[90%] rounded-2xl bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-1 items-center justify-center flex "
-        initial={{ y: 50, scale:0.85}}
-        whileInView={{ y: 0, scale:1 }}
-        transition={{ type: "spring", stiffness: 300, duration: 0.7 }}
         >
 
       <motion.div
@@ -98,7 +95,7 @@ export default function MusicGallery() {
           bg-black/95
           rounded-2xl
           overflow-y-auto
-          p-10 space-y-3
+          p-5 space-y-3
           border border-neutral-800
           no-scrollbar
         "

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Loader } from "lucide-react";
 import { on } from "events";
 import { motion } from "framer-motion";
 
@@ -18,11 +18,13 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Create audio once
   useEffect(() => {
-    audioRef.current = new Audio(src);
     const audio = audioRef.current;
+    if (!audio) return;
 
     const updateProgress = () => {
       if (!audio || !audio.duration) return;
@@ -34,13 +36,22 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
       onRequestNext();
     };
 
+    const handleCanPlay = () => {
+      setIsLoaded(true);
+      setIsLoading(false);
+    };
+
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("canplaythrough", handleCanPlay);
+    audio.addEventListener("loadeddata", handleCanPlay);
 
     return () => {
       audio.pause();
       audio.removeEventListener("timeupdate", updateProgress);
       audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("canplaythrough", handleCanPlay);
+      audio.removeEventListener("loadeddata", handleCanPlay);
     };
   }, [src, onRequestNext]);
 
@@ -50,7 +61,12 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
     if (!audio) return;
 
     if (isActive && !isPlaying) {
-      audio.play().then(() => setIsPlaying(true)).catch(() => {});
+      if (!isLoaded) {
+        // if not loaded yet, load then play when ready
+        loadTrack(true);
+      } else {
+        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
     } else {
       audio.pause();
       setIsPlaying(false);
@@ -61,6 +77,12 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
     const audio = audioRef.current;
     if (!audio) return;
 
+    if (!isLoaded) {
+      // If not loaded yet, trigger load-and-play
+      loadTrack(true);
+      return;
+    }
+
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
@@ -68,6 +90,33 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
       onActivate(); // Notify parent that this song is now active
       audio.play().then(() => setIsPlaying(true)).catch(() => {});
     }
+  };
+
+  const loadTrack = (andPlay = false) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isLoaded || isLoading) return;
+
+    setIsLoading(true);
+    // ensure browser will preload
+    try {
+      audio.preload = 'auto';
+      audio.load();
+    } catch (e) {
+      // ignore
+    }
+
+    const onCanPlay = () => {
+      setIsLoaded(true);
+      setIsLoading(false);
+      audio.removeEventListener('canplaythrough', onCanPlay);
+      if (andPlay) {
+        onActivate();
+        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+      }
+    };
+
+    audio.addEventListener('canplaythrough', onCanPlay);
   };
 
   const updateProgress = () => {
@@ -94,6 +143,7 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
       <audio
         ref={audioRef}
         src={src}
+        preload="none"
         onTimeUpdate={updateProgress}
         onEnded={() => setIsPlaying(false)}
       />
@@ -103,17 +153,29 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
       </div>
 
     <div className="flex flex-row w-full pb-[5%] items-center pl-[2%]">
-      <motion.button
-        onClick={togglePlay}
-        className="text-purple-200 rounded-full p-2 h-10 flex items-center justify-center"
-        whileHover={{ scale: 1.2 }}
-      >
-        {isPlaying ? <Pause size={25} strokeWidth={3}/> : <Play size={25} strokeWidth={3}/>}
-      </motion.button>
+      {/* Show Load button until the audio is ready, then show play/pause */}
+      {!isLoaded ? (
+        <motion.button
+          onClick={() => loadTrack(true)}
+          disabled={isLoading}
+          className="text-purple-200 rounded-full p-2 h-10 flex items-center justify-center"
+          whileHover={{ scale: 1.05 }}
+        >
+          {isLoading ? <Loader size={25} strokeWidth={3}/> : <Play size={25} strokeWidth={3}/>}
+        </motion.button>
+      ) : (
+        <motion.button
+          onClick={togglePlay}
+          className="text-purple-200 rounded-full p-2 h-10 flex items-center justify-center"
+          whileHover={{ scale: 1.2 }}
+        >
+          {isPlaying ? <Pause size={25} strokeWidth={3}/> : <Play size={25} strokeWidth={3}/>}
+        </motion.button>
+      )}
 
       <motion.div
         ref={progressRef}
-        className="md:w-[85%] w-[78%] h-2 bg-gray-700 rounded-full cursor-pointer ml-4 items-center"
+        className="md:w-[85%] w-[78%] h-2 bg-gray-700 rounded-full cursor-pointer ml-2 items-center"
         onClick={scrub}
         whileHover={{ scaleY: 1.5 }}
       >
