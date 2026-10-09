@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import SongCard from "./SongCard";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/my-portfolio";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 const songs = [
   { title: "If only I could fly", artist: "Eliam", src: `${basePath}/If only I could fly-final3.mp3` },
