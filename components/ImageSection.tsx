@@ -11,12 +11,16 @@ interface ImageSectionProps {
 export default function ImageSection({ src, alt }: ImageSectionProps) {
   return (
     <motion.div
-      className="absolute right-0 top-0 h-full md:w-1/2 w-full opacity-40 md:opacity-100 flex justify-center items-center"
+      className="relative mx-auto flex max-w-lg items-center justify-center"
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
     >
       <Image
         src={src}
         alt={alt}
-        className="rounded-2xl max-w-[90%]"
+        className="rounded-[28px] border border-white/10 shadow-2xl shadow-purple-500/20"
+        priority
       />
     </motion.div>
   )

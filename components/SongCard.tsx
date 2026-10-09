@@ -1,7 +1,6 @@
-import { useRef, useState, useEffect } from "react";
-import { Play, Pause, Loader } from "lucide-react";
-import { on } from "events";
 import { motion } from "framer-motion";
+import { Pause, Play, SkipBack, SkipForward, Loader } from "lucide-react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 
 interface SongCardProps {
   title: string;
@@ -10,9 +9,18 @@ interface SongCardProps {
   isActive: boolean;
   onActivate: () => void;
   onRequestNext: () => void;
+  onRequestPrevious: () => void;
 }
 
-const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: SongCardProps) => {
+const SongCard = ({
+  title,
+  artist,
+  src,
+  isActive,
+  onActivate,
+  onRequestNext,
+  onRequestPrevious,
+}: SongCardProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
 
@@ -21,13 +29,12 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Create audio once
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const updateProgress = () => {
-      if (!audio || !audio.duration) return;
+      if (!audio.duration) return;
       setProgress((audio.currentTime / audio.duration) * 100);
     };
 
@@ -55,30 +62,59 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
     };
   }, [src, onRequestNext]);
 
-  // Automatically play/pause based on `isActive`
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isActive && !isPlaying) {
-      if (!isLoaded) {
-        // if not loaded yet, load then play when ready
-        loadTrack(true);
-      } else {
-        audio.play().then(() => setIsPlaying(true)).catch(() => {});
-      }
-    } else {
+    if (!isActive) {
       audio.pause();
       setIsPlaying(false);
+      return;
     }
-  }, [isActive]);
 
-  const togglePlay = () => { 
+    if (!isLoaded) {
+      loadTrack(true);
+      return;
+    }
+
+    audio.play().then(() => setIsPlaying(true)).catch(() => {
+      setIsPlaying(false);
+    });
+  }, [isActive, isLoaded]);
+
+  const loadTrack = (andPlay = false) => {
+    const audio = audioRef.current;
+    if (!audio || isLoading || isLoaded) return;
+
+    setIsLoading(true);
+    audio.preload = "auto";
+    audio.load();
+
+    const onCanPlay = () => {
+      setIsLoaded(true);
+      setIsLoading(false);
+      audio.removeEventListener("canplaythrough", onCanPlay);
+
+      if (andPlay) {
+        onActivate();
+        audio.play().then(() => setIsPlaying(true)).catch(() => {
+          setIsPlaying(false);
+        });
+      }
+    };
+
+    audio.addEventListener("canplaythrough", onCanPlay);
+  };
+
+  const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
+    if (!isActive) {
+      onActivate();
+    }
+
     if (!isLoaded) {
-      // If not loaded yet, trigger load-and-play
       loadTrack(true);
       return;
     }
@@ -86,111 +122,108 @@ const SongCard = ({ title, artist, src, isActive, onActivate, onRequestNext}: So
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
-    } else {
-      onActivate(); // Notify parent that this song is now active
-      audio.play().then(() => setIsPlaying(true)).catch(() => {});
-    }
-  };
-
-  const loadTrack = (andPlay = false) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isLoaded || isLoading) return;
-
-    setIsLoading(true);
-    // ensure browser will preload
-    try {
-      audio.preload = 'auto';
-      audio.load();
-    } catch (e) {
-      // ignore
+      return;
     }
 
-    const onCanPlay = () => {
-      setIsLoaded(true);
-      setIsLoading(false);
-      audio.removeEventListener('canplaythrough', onCanPlay);
-      if (andPlay) {
-        onActivate();
-        audio.play().then(() => setIsPlaying(true)).catch(() => {});
-      }
-    };
-
-    audio.addEventListener('canplaythrough', onCanPlay);
+    audio.play().then(() => setIsPlaying(true)).catch(() => {
+      setIsPlaying(false);
+    });
   };
 
   const updateProgress = () => {
     const audio = audioRef.current;
-    if (!audio || isNaN(audio.duration)) return;
-    const percent = (audio.currentTime / audio.duration) * 100;
-    setProgress(percent);
+    if (!audio || Number.isNaN(audio.duration)) return;
+    setProgress((audio.currentTime / audio.duration) * 100);
   };
 
-  const scrub = (e: React.MouseEvent<HTMLDivElement>) => {
+  const scrub = (event: MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
     const progressBar = progressRef.current;
     if (!audio || !progressBar) return;
 
     const rect = progressBar.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
+    const clickX = event.clientX - rect.left;
     const width = rect.width;
-
     audio.currentTime = (clickX / width) * audio.duration;
   };
 
   return (
-    <div className="bg-zinc-900 rounded-xl flex flex-col h-22">
+    <div className={`mb-3 rounded-2xl border p-3 transition-all ${isActive ? "border-purple-500 bg-zinc-900 shadow-lg shadow-purple-500/10" : "border-zinc-800 bg-zinc-950/90"}`}>
       <audio
         ref={audioRef}
         src={src}
         preload="none"
         onTimeUpdate={updateProgress}
-        onEnded={() => setIsPlaying(false)}
+        onPause={() => setIsPlaying(false)}
       />
 
-      <div className="flex flex-row justify-between items-center pt-3 ml-[25%]">
-        <h3 className="text-purple-200 text-[14px] font-bold mr-5">{title} </h3>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-zinc-400">{artist}</p>
+          <h3 className="text-lg font-semibold text-white">{title}</h3>
+        </div>
+
+        {isActive && (
+          <span className="rounded-full border border-purple-500/40 bg-purple-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-purple-200">
+            Now Playing
+          </span>
+        )}
       </div>
 
-    <div className="flex flex-row w-full pb-[5%] items-center pl-[2%]">
-      {/* Show Load button until the audio is ready, then show play/pause */}
-      {!isLoaded ? (
-        <motion.button
-          onClick={() => loadTrack(true)}
-          disabled={isLoading}
-          className="text-purple-200 rounded-full p-2 h-10 flex items-center justify-center"
-          whileHover={{ scale: 1.05 }}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          aria-label="Previous track"
+          onClick={() => onRequestPrevious()}
+          className="rounded-full border border-zinc-700 p-2 text-zinc-200 transition hover:border-purple-400 hover:text-purple-200"
         >
-          {isLoading ? <Loader size={25} strokeWidth={3}/> : <Play size={25} strokeWidth={3}/>}
-        </motion.button>
-      ) : (
-        <motion.button
-          onClick={togglePlay}
-          className="text-purple-200 rounded-full p-2 h-10 flex items-center justify-center"
-          whileHover={{ scale: 1.2 }}
-        >
-          {isPlaying ? <Pause size={25} strokeWidth={3}/> : <Play size={25} strokeWidth={3}/>}
-        </motion.button>
-      )}
+          <SkipBack size={16} />
+        </button>
 
-      <motion.div
-        ref={progressRef}
-        className="md:w-[85%] w-[78%] h-2 bg-gray-700 rounded-full cursor-pointer ml-2 items-center"
-        onClick={scrub}
-        whileHover={{ scaleY: 1.5 }}
-      >
+        {!isLoaded ? (
+          <button
+            type="button"
+            aria-label={isLoading ? "Loading track" : "Load and play track"}
+            onClick={() => loadTrack(true)}
+            disabled={isLoading}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-600 text-white transition hover:bg-purple-500 disabled:cursor-wait disabled:opacity-70"
+          >
+            {isLoading ? <Loader size={18} className="animate-spin" /> : <Play size={18} className="ml-0.5" />}
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-label={isPlaying ? "Pause track" : "Play track"}
+            onClick={togglePlay}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg shadow-purple-500/30 transition hover:scale-105"
+          >
+            {isPlaying ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
+          </button>
+        )}
+
+        <button
+          type="button"
+          aria-label="Next track"
+          onClick={() => onRequestNext()}
+          className="rounded-full border border-zinc-700 p-2 text-zinc-200 transition hover:border-purple-400 hover:text-purple-200"
+        >
+          <SkipForward size={16} />
+        </button>
+
         <div
-          style={{ width: `${progress}%` }}
-          className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full transition-[width]"
-        />
-      </motion.div>
-
-    </div>
+          ref={progressRef}
+          className="relative h-2 flex-1 cursor-pointer overflow-hidden rounded-full bg-zinc-700"
+          onClick={scrub}
+        >
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 transition-[width]"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
 
 export default SongCard;
-
-
 
